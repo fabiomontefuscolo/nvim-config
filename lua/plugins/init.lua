@@ -13,6 +13,11 @@ return {
     end,
   },
 
+  {
+    "nvim-tree/nvim-tree.lua",
+    opts = require "configs.nvim-tree",
+  },
+
   -- {
   -- 	"nvim-treesitter/nvim-treesitter",
   -- 	opts = {
