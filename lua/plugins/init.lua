@@ -35,7 +35,7 @@ return {
 
   {
     "karoliskoncevicius/vim-sendtowindow",
-    lazy = true,
+    lazy = false,
   },
 
   -- {
