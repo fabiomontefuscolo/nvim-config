@@ -32,6 +32,12 @@ return {
     end,
     lazy = true,
   },
+
+  {
+    "karoliskoncevicius/vim-sendtowindow",
+    lazy = true,
+  },
+
   -- {
   -- 	"nvim-treesitter/nvim-treesitter",
   -- 	opts = {
