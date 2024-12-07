@@ -18,6 +18,10 @@ return {
     opts = require "configs.nvim-tree",
   },
 
+  {
+    "f-person/git-blame.nvim",
+    lazy = true,
+  },
 
   {
     "github/copilot.vim",
