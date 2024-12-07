@@ -14,4 +14,17 @@ M.base46 = {
 	-- },
 }
 
+M.term = {
+  winopts = { number = false },
+  sizes = { sp = 0.3, vsp = 0.2, ["bo sp"] = 0.3, ["bo vsp"] = 0.2 },
+  float = {
+    relative = "editor",
+    row = 0.15,
+    col = 0.1,
+    width = 0.8,
+    height = 0.7,
+    border = "single",
+  },
+}
+
 return M
