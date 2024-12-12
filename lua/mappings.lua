@@ -4,9 +4,6 @@ local map = vim.keymap.set
 local unmap = vim.keymap.del
 local gitsigns = require "gitsigns"
 
--- Easy life
-map("n", ";", ":", { desc = "General Enter command mode" })
-
 -- Copilot
 map("i", "<C-a>", 'copilot#Accept("\\<CR>")', {
   desc = "Copilot Accept",
