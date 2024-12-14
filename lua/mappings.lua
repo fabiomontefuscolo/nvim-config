@@ -12,9 +12,10 @@ map("i", "<C-a>", 'copilot#Accept("\\<CR>")', {
 })
 vim.g.copilot_no_tab_map = true
 
--- Remove weird term shortcut
+-- Remove shortcuts I don't like
 unmap("n", "<leader>h")
 unmap("n", "<leader>v")
+unmap("n", "<C-c>")
 
 -- Gitsigns
 map("n", "]c", function()

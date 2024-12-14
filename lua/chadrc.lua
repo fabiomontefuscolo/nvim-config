@@ -16,7 +16,7 @@ M.base46 = {
 
 M.term = {
   winopts = { number = false },
-  sizes = { sp = 0.3, vsp = 0.4, ["bo sp"] = 0.3, ["bo vsp"] = 0.3 },
+  sizes = { sp = 0.5, vsp = 0.5, ["bo sp"] = 0.3, ["bo vsp"] = 0.3 },
   float = {
     relative = "editor",
     row = 0.15,
