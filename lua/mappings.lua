@@ -5,6 +5,14 @@ local map = vim.keymap.set
 local unmap = vim.keymap.del
 local gitsigns = require "gitsigns"
 
+-- Usefuopy relative file path=expand('%)
+map("n", "<f4>", function()
+        local path = vim.fn.expand("%")
+        vim.fn.setreg("+", path)
+    end,
+    { desc = "Copy relative file path to the clipboard" }
+)
+
 -- Copilot
 map("i", "<C-a>", 'copilot#Accept("\\<CR>")', {
   desc = "Copilot Accept",
