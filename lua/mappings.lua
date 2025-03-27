@@ -4,6 +4,7 @@ require "nvchad.mappings"
 local map = vim.keymap.set
 local unmap = vim.keymap.del
 local gitsigns = require "gitsigns"
+local git = require "lib.git"
 
 -- Usefuopy relative file path=expand('%)
 map("n", "<f4>", function()
@@ -74,6 +75,26 @@ map("n", "<leader>hD", function()
         gitsigns.diffthis "~"
     end,
     { desc = "Gitsigns Diff this (cached)" }
+)
+map("n", "<leader>hg", function()
+        local remote = git.get_remote_components()
+        local commit_hash = git.get_commit_hash()
+        local rel_path = vim.fn.expand("%")
+        local row_number = vim.fn.line(".")
+
+        if remote then
+            vim.fn.setreg(
+                "+",
+                "https://" .. remote.hostname
+                .. "/" .. remote.path
+                .. "/blob"
+                .. "/" .. commit_hash
+                .. "/" .. rel_path
+                .. "#L" .. row_number
+            )
+        end
+    end,
+    { desc = "Copy permalink" }
 )
 map("n", "<leader>td", gitsigns.toggle_deleted, { desc = "Gitsigns Toggle deleted" })
 
