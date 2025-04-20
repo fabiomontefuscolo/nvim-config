@@ -6,6 +6,10 @@ local unmap = vim.keymap.del
 local gitsigns = require "gitsigns"
 local git = require "lib.git"
 
+-- Add command to allow :W as an alias for :write
+vim.cmd("command W write")
+
+
 -- Usefuopy relative file path=expand('%)
 map("n", "<f4>", function()
         local path = vim.fn.expand("%")
