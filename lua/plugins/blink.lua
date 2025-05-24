@@ -3,6 +3,7 @@ return {
   event = 'VimEnter',
   version = '1.*',
   dependencies = {
+    'Kaiser-Yang/blink-cmp-avante',
     {
       'L3MON4D3/LuaSnip',
       version = '2.*',
