@@ -63,6 +63,7 @@ rtp:prepend(lazypath)
 require('lazy').setup({
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
 
+  require 'plugins.toggleterm',
   require 'plugins.gitsigns',
   require 'plugins.which-key',
   require 'plugins.telescope',
