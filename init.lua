@@ -59,21 +59,23 @@ rtp:prepend(lazypath)
 require('lazy').setup({
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
 
-  require 'custom.plugins.gitsigns',
-  require 'custom.plugins.which-key',
-  require 'custom.plugins.telescope',
-  require 'custom.plugins.lazydev',
-  require 'custom.plugins.lspconfig',
-  require 'custom.plugins.conform',
-  require 'custom.plugins.blink',
-  require 'custom.plugins.tokyonight',
-  require 'custom.plugins.todo-comments',
-  require 'custom.plugins.mini',
-  require 'custom.plugins.nvim-treesitter',
+  require 'plugins.gitsigns',
+  require 'plugins.which-key',
+  require 'plugins.telescope',
+  require 'plugins.lazydev',
+  require 'plugins.lspconfig',
+  require 'plugins.conform',
+  require 'plugins.blink',
+  require 'plugins.tokyonight',
+  require 'plugins.todo-comments',
+  require 'plugins.mini',
+  require 'plugins.nvim-treesitter',
 
-  require 'kickstart.plugins.debug',
-  require 'kickstart.plugins.neo-tree',
-  require 'kickstart.plugins.gitsigns',
+  require 'plugins.debug',
+  require 'plugins.neo-tree',
+  require 'plugins.gitsigns',
+
+  require 'plugins.avante',
 }, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {
