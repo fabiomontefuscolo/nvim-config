@@ -15,9 +15,8 @@ return {
     open_mapping = [[<c-\>]],
   },
   keys = {
-    { '<leader>tt', '<cmd>ToggleTerm<cr>', desc = 'Toggle terminal' },
-    { '<leader>tf', '<cmd>ToggleTerm direction=float<cr>', desc = 'Toggle floating terminal' },
-    { '<leader>th', '<cmd>ToggleTerm direction=horizontal<cr>', desc = 'Toggle horizontal terminal' },
-    { '<leader>tv', '<cmd>ToggleTerm direction=vertical size=60<cr>', desc = 'Toggle vertical terminal' },
+    { '<M-i>', '<cmd>ToggleTerm direction=float<cr>', desc = 'Toggle floating terminal' },
+    { '<M-h>', '<cmd>ToggleTerm direction=horizontal<cr>', desc = 'Toggle horizontal terminal' },
+    { '<M-v>', '<cmd>ToggleTerm direction=vertical size=60<cr>', desc = 'Toggle vertical terminal' },
   },
 }

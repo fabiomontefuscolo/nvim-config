@@ -64,10 +64,9 @@ A personalized fork of [kickstart.nvim](https://github.com/nvim-lua/kickstart.nv
 
 ### Terminal
 
-- `<leader>tt` - Toggle terminal
-- `<leader>tf` - Toggle floating terminal
-- `<leader>th` - Toggle horizontal terminal
-- `<leader>tv` - Toggle vertical terminal
+- `<M-i>` - Toggle floating terminal
+- `<M-h>` - Toggle horizontal terminal
+- `<M-v>` - Toggle vertical terminal
 
 ## Installation
 
