@@ -29,6 +29,8 @@ vim.schedule(function()
   vim.o.clipboard = 'unnamedplus'
 end)
 
+-- Add command to allow :W as an alias for :write
+vim.cmd 'command W write'
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 vim.keymap.set('t', '<C-x>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
@@ -36,9 +38,14 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-vim.keymap.set('n', '<Tab>', ':bn<CR>', { desc = 'Switch to the next buffer' })
-vim.keymap.set('n', '<S-Tab>', ':bp<CR>', { desc = 'Switch to the previous buffer' })
 vim.keymap.set('n', '<leader>x', ':bd<CR>', { desc = 'Close current buffer' })
+vim.keymap.set('n', '<leader>rn', ':set rnu!<CR>', { desc = 'Toggle relative number' })
+
+-- Copy relative file path=expand('%)
+vim.keymap.set('n', '<f4>', function()
+  local path = vim.fn.expand '%'
+  vim.fn.setreg('+', path)
+end, { desc = 'Copy relative file path to the clipboard' })
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
