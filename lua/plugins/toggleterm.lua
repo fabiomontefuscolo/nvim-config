@@ -10,9 +10,10 @@ return {
   'akinsho/toggleterm.nvim',
   version = '*',
   config = true,
+  event = 'VeryLazy',
   opts = {
     size = 10,
-    open_mapping = [[<c-\>]],
+    open_mapping = [[<c-`>]],
   },
   keys = {
     { '<M-i>', '<cmd>ToggleTerm direction=float<cr>', desc = 'Toggle floating terminal' },
