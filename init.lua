@@ -41,6 +41,16 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 vim.keymap.set('n', '<leader>x', ':bd<CR>', { desc = 'Close current buffer' })
 vim.keymap.set('n', '<leader>rn', ':set rnu!<CR>', { desc = 'Toggle relative number' })
 
+vim.keymap.set('n', 'gf', function()
+  local window_list = vim.api.nvim_list_wins()
+  local window_id = math.min(unpack(window_list))
+
+  local file = vim.fn.expand '<cfile>'
+
+  vim.api.nvim_set_current_win(window_id)
+  vim.api.nvim_command('edit ' .. file)
+end, { desc = 'Open file under cursor in a specific window' })
+
 -- Copy relative file path=expand('%)
 vim.keymap.set('n', '<f4>', function()
   local path = vim.fn.expand '%'
