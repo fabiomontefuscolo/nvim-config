@@ -91,6 +91,7 @@ require('lazy').setup({
   require 'plugins.tokyonight',
   require 'plugins.todo-comments',
   require 'plugins.mini',
+  require 'plugins.bufferline',
   require 'plugins.nvim-treesitter',
 
   require 'plugins.debug',
