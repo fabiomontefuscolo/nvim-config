@@ -97,6 +97,7 @@ require('lazy').setup({
   require 'plugins.debug',
   require 'plugins.neo-tree',
   require 'plugins.gitsigns',
+  require 'plugins.gitlinker',
 
   require 'plugins.copilot',
   require 'plugins.avante',
