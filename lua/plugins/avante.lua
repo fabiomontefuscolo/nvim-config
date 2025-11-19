@@ -4,7 +4,7 @@ return {
   version = false,
   opts = function()
     return {
-      provider = vim.env.AVANTI_PROVIDER or 'copilot',
+      provider = vim.env.ANTHROPIC_API_KEY and "claude" or 'copilot',
     }
   end,
   build = 'make',
