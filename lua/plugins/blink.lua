@@ -13,6 +13,9 @@ return {
   opts = {
     keymap = {
       preset = "default",
+      ["<CR>"] = { "accept", "fallback" }, -- Accept first/selected item with Enter
+      ["<C-p>"] = { "select_prev", "fallback" }, -- Navigate up
+      ["<C-n>"] = { "select_next", "fallback" }, -- Navigate down
     },
 
     appearance = {
