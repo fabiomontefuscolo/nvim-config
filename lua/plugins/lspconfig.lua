@@ -5,7 +5,7 @@ return {
     "mason-org/mason-lspconfig.nvim",
     "WhoIsSethDaniel/mason-tool-installer.nvim",
 
-    { "j-hui/fidget.nvim", opts = {} },
+    { "j-hui/fidget.nvim",    opts = {} },
 
     "saghen/blink.cmp",
   },
@@ -46,7 +46,7 @@ return {
 
         local client = vim.lsp.get_client_by_id(event.data.client_id)
         if
-          client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf)
+            client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf)
         then
           local highlight_augroup = vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
           vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
@@ -107,57 +107,123 @@ return {
 
     local capabilities = require("blink.cmp").get_lsp_capabilities()
 
+    -- LSP server configurations mapped to their filetypes
     local servers = {
       intelephense = {
         filetypes = { "php" },
+        config = {},
       },
 
       ruff = {
         filetypes = { "python" },
+        config = {},
       },
 
       pyright = {
         filetypes = { "python" },
-        root_dir = vim.fs.root(0, { "pyproject.toml", "setup.py", ".git", vim.fn.getcwd() }),
-        settings = {
-          pyright = {
-            disableOrganizeImports = true,
-          },
-          python = {
-            analysis = {
-              ignore = { "*" },
+        config = {
+          root_dir = vim.fs.root(0, { "pyproject.toml", "setup.py", ".git", vim.fn.getcwd() }),
+          settings = {
+            pyright = {
+              disableOrganizeImports = true,
+            },
+            python = {
+              analysis = {
+                ignore = { "*" },
+              },
             },
           },
         },
       },
 
       lua_ls = {
-        settings = {
-          Lua = {
-            completion = {
-              callSnippet = "Replace",
+        filetypes = { "lua" },
+        config = {
+          settings = {
+            Lua = {
+              completion = {
+                callSnippet = "Replace",
+              },
             },
           },
         },
       },
     }
 
-    local ensure_installed = vim.tbl_keys(servers or {})
-    vim.list_extend(ensure_installed, {
-      "stylua", -- Used to format Lua code
-    })
-    require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+    -- Track which servers have been set up
+    local setup_servers = {}
 
+    -- Function to setup a server
+    local function setup_server(server_name)
+      if setup_servers[server_name] then
+        return
+      end
+
+      local server_config = servers[server_name]
+      if not server_config then
+        return
+      end
+
+      local config = vim.tbl_deep_extend("force", {}, server_config.config or {})
+      config.capabilities = vim.tbl_deep_extend("force", {}, capabilities, config.capabilities or {})
+
+      -- Set filetypes explicitly
+      if server_config.filetypes then
+        config.filetypes = server_config.filetypes
+      end
+
+      require("lspconfig")[server_name].setup(config)
+      setup_servers[server_name] = true
+    end
+
+    -- -- Only ensure non-LSP tools are installed
+    -- require("mason-tool-installer").setup({
+    --   ensure_installed = {
+    --     "stylua", -- Lua formatter
+    --   },
+    -- })
+
+    -- Enable automatic installation when a filetype is opened
     require("mason-lspconfig").setup({
-      ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
-      automatic_installation = false,
+      ensure_installed = {},         -- Don't install anything upfront
+      automatic_installation = true, -- Auto-install when needed
       handlers = {
         function(server_name)
-          local server = servers[server_name] or {}
-          server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-          require("lspconfig")[server_name].setup(server)
+          setup_server(server_name)
         end,
       },
     })
+
+    -- Create FileType autocommands for lazy server setup
+    local filetype_to_servers = {}
+    for server_name, server_config in pairs(servers) do
+      if server_config.filetypes then
+        for _, ft in ipairs(server_config.filetypes) do
+          if not filetype_to_servers[ft] then
+            filetype_to_servers[ft] = {}
+          end
+          table.insert(filetype_to_servers[ft], server_name)
+        end
+      end
+    end
+
+    for ft, server_list in pairs(filetype_to_servers) do
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = ft,
+        callback = function()
+          for _, server_name in ipairs(server_list) do
+            -- Check if server is installed via mason
+            local registry = require("mason-registry")
+            if registry.is_installed(server_name) then
+              setup_server(server_name)
+            else
+              -- Trigger mason-lspconfig to install it
+              vim.notify("Installing LSP server: " .. server_name, vim.log.levels.INFO)
+            end
+          end
+        end,
+        group = vim.api.nvim_create_augroup("lsp-lazy-load", { clear = true }),
+      })
+    end
   end,
 }
