@@ -3,7 +3,6 @@ return {
   event = 'VimEnter',
   version = '1.*',
   dependencies = {
-    'Kaiser-Yang/blink-cmp-avante',
     'giuxtaposition/blink-cmp-copilot',
     'folke/lazydev.nvim',
     {
