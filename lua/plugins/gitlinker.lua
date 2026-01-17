@@ -1,12 +1,9 @@
 return {
-  "ruifm/gitlinker.nvim",
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-  },
-  opts = {
-    mappings = "<leader>gy",
-    opts = {
-      print_url = true,
-    },
+  'linrongbin16/gitlinker.nvim',
+  cmd = 'GitLink',
+  opts = {},
+  keys = {
+    { '<leader>gy', '<cmd>GitLink<cr>',  mode = { 'n', 'v' }, desc = 'Yank git link' },
+    { '<leader>gY', '<cmd>GitLink current_branch<cr>', mode = { 'n', 'v' }, desc = 'Yank git link' },
   },
 }
