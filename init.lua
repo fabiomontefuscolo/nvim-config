@@ -39,7 +39,30 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-vim.keymap.set('n', '<leader>x', ':bd<CR>', { desc = 'Close current buffer' })
+-- Smart buffer delete that preserves window layout
+vim.keymap.set('n', '<leader>x', function()
+  local current_buf = vim.api.nvim_get_current_buf()
+  local buffers = vim.fn.getbufinfo({ buflisted = 1 })
+
+  -- Filter out current buffer and get other listed buffers
+  local other_buffers = {}
+  for _, buf in ipairs(buffers) do
+    if buf.bufnr ~= current_buf then
+      table.insert(other_buffers, buf.bufnr)
+    end
+  end
+
+  -- If there are other buffers, switch to the next one before deleting
+  if #other_buffers > 0 then
+    vim.cmd('buffer ' .. other_buffers[1])
+  else
+    -- If this is the last buffer, create a new empty buffer
+    vim.cmd('enew')
+  end
+
+  -- Now delete the original buffer
+  vim.cmd('bdelete! ' .. current_buf)
+end, { desc = 'Close current buffer' })
 vim.keymap.set('n', '<leader>rn', ':set rnu!<CR>', { desc = 'Toggle relative number' })
 
 vim.keymap.set('n', 'gf', function()
