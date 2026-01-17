@@ -153,7 +153,7 @@ return {
     -- Track which servers have been set up
     local setup_servers = {}
 
-    -- Function to setup a server
+    -- Function to setup a server using the new vim.lsp.config API (nvim 0.11+)
     local function setup_server(server_name)
       if setup_servers[server_name] then
         return
@@ -172,7 +172,15 @@ return {
         config.filetypes = server_config.filetypes
       end
 
-      require("lspconfig")[server_name].setup(config)
+      -- Use new vim.lsp.config API for nvim 0.11+
+      if vim.lsp.config then
+        vim.lsp.config[server_name] = config
+        vim.lsp.enable(server_name)
+      else
+        -- Fallback to old lspconfig for older nvim versions
+        require("lspconfig")[server_name].setup(config)
+      end
+
       setup_servers[server_name] = true
     end
 
