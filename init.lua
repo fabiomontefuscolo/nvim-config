@@ -114,7 +114,6 @@ require('lazy').setup({
   require 'plugins.blink',
   require 'plugins.tokyonight',
   require 'plugins.todo-comments',
-  require 'plugins.mini',
   require 'plugins.bufferline',
   require 'plugins.nvim-treesitter',
 
