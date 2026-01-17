@@ -7,12 +7,13 @@ vim.o.shiftwidth = 4
 vim.o.tabstop = 4
 
 vim.o.number = true
-vim.o.mouse = 'a'
+vim.o.relativenumber = true
+-- vim.o.mouse = 'a'
 vim.o.showmode = false
 vim.o.breakindent = true
 vim.o.undofile = true
 vim.o.ignorecase = true
-vim.o.smartcase = true
+vim.o.smartcase = false
 vim.o.signcolumn = 'yes'
 vim.o.updatetime = 250
 vim.o.timeoutlen = 300
