@@ -14,6 +14,18 @@ return {
     opts = {
       log_level = 'debug',
     },
+    display = {
+      diff = {
+        provider_opts = {
+          inline = {
+            layout = 'buffer', -- float|buffer - Where to display the diff
+            opts = {
+              context_lines = 3, -- Number of context lines in hunks
+            },
+          },
+        },
+      },
+    },
   },
   keys = {
     { '<leader>aa', '<cmd>CodeCompanionActions<cr>', mode = { 'n', 'v' }, desc = 'CodeCompanion Actions' },
@@ -23,9 +35,3 @@ return {
   },
 }
 
-
--- Test comment added by CodeCompanion to verify diff tool
--- You can remove this line after testing
-
--- Second test comment to verify confirmation mode
--- This should require confirmation before being applied
