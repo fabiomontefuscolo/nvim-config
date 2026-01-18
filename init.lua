@@ -123,6 +123,7 @@ require('lazy').setup({
   require 'plugins.gitlinker',
 
   require 'plugins.copilot',
+  require 'plugins.codecompanion',
 }, {
   ui = {
     icons = vim.g.have_nerd_font and {} or {
