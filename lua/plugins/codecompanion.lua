@@ -28,10 +28,29 @@ return {
     },
   },
   keys = {
-    { '<leader>aa', '<cmd>CodeCompanionActions<cr>', mode = { 'n', 'v' }, desc = 'CodeCompanion Actions' },
-    { '<leader>at', '<cmd>CodeCompanionChat Toggle<cr>', mode = { 'n', 'v' }, desc = 'Toggle CodeCompanion Chat' },
-    { '<leader>ac', '<cmd>CodeCompanionChat<cr>', mode = { 'n', 'v' }, desc = 'Open CodeCompanion Chat' },
-    { 'ga', '<cmd>CodeCompanionChat Add<cr>', mode = 'v', desc = 'Add selection to CodeCompanion' }, -- Note: Overrides built-in 'ga' (print ASCII)
+    {
+      '<leader>aa',
+      '<cmd>CodeCompanionActions<cr>',
+      mode = { 'n', 'v' },
+      desc = 'CodeCompanion Actions',
+    },
+    {
+      '<leader>at',
+      '<cmd>CodeCompanionChat Toggle<cr>',
+      mode = { 'n', 'v' },
+      desc = 'Toggle CodeCompanion Chat',
+    },
+    {
+      '<leader>ac',
+      '<cmd>CodeCompanionChat<cr>',
+      mode = { 'n', 'v' },
+      desc = 'Open CodeCompanion Chat',
+    },
+    {
+      'ga',
+      '<cmd>CodeCompanionChat Add<cr>',
+      mode = 'v',
+      desc = 'Add selection to CodeCompanion',
+    }, -- Note: Overrides built-in 'ga' (print ASCII)
   },
 }
-

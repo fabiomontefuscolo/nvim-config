@@ -33,16 +33,41 @@ end)
 -- Add command to allow :W as an alias for :write
 vim.cmd 'command W write'
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set(
+  'n',
+  '<leader>q',
+  vim.diagnostic.setloclist,
+  { desc = 'Open diagnostic [Q]uickfix list' }
+)
 vim.keymap.set('t', '<C-x>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set(
+  'n',
+  '<C-h>',
+  '<C-w><C-h>',
+  { desc = 'Move focus to the left window' }
+)
+vim.keymap.set(
+  'n',
+  '<C-l>',
+  '<C-w><C-l>',
+  { desc = 'Move focus to the right window' }
+)
+vim.keymap.set(
+  'n',
+  '<C-j>',
+  '<C-w><C-j>',
+  { desc = 'Move focus to the lower window' }
+)
+vim.keymap.set(
+  'n',
+  '<C-k>',
+  '<C-w><C-k>',
+  { desc = 'Move focus to the upper window' }
+)
 -- Smart buffer delete that preserves window layout
 vim.keymap.set('n', '<leader>x', function()
   local current_buf = vim.api.nvim_get_current_buf()
-  local buffers = vim.fn.getbufinfo({ buflisted = 1 })
+  local buffers = vim.fn.getbufinfo { buflisted = 1 }
 
   -- Filter out current buffer and get other listed buffers
   local other_buffers = {}
@@ -57,13 +82,18 @@ vim.keymap.set('n', '<leader>x', function()
     vim.cmd('buffer ' .. other_buffers[1])
   else
     -- If this is the last buffer, create a new empty buffer
-    vim.cmd('enew')
+    vim.cmd 'enew'
   end
 
   -- Now delete the original buffer
   vim.cmd('bdelete! ' .. current_buf)
 end, { desc = 'Close current buffer' })
-vim.keymap.set('n', '<leader>rn', ':set rnu!<CR>', { desc = 'Toggle relative number' })
+vim.keymap.set(
+  'n',
+  '<leader>rn',
+  ':set rnu!<CR>',
+  { desc = 'Toggle relative number' }
+)
 
 vim.keymap.set('n', 'gf', function()
   local window_list = vim.api.nvim_list_wins()
@@ -83,7 +113,10 @@ end, { desc = 'Copy relative file path to the clipboard' })
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
+  group = vim.api.nvim_create_augroup(
+    'kickstart-highlight-yank',
+    { clear = true }
+  ),
   callback = function()
     vim.hl.on_yank()
   end,
@@ -92,7 +125,14 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-  local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
+  local out = vim.fn.system {
+    'git',
+    'clone',
+    '--filter=blob:none',
+    '--branch=stable',
+    lazyrepo,
+    lazypath,
+  }
   if vim.v.shell_error ~= 0 then
     error('Error cloning lazy.nvim:\n' .. out)
   end
