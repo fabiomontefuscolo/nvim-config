@@ -50,10 +50,10 @@ return {
 
     local function setup_document_highlighting(client, event)
       if not client_supports_method(
-          client,
-          vim.lsp.protocol.Methods.textDocument_documentHighlight,
-          event.buf
-        ) then
+            client,
+            vim.lsp.protocol.Methods.textDocument_documentHighlight,
+            event.buf
+          ) then
         return
       end
 
@@ -92,10 +92,10 @@ return {
 
     local function setup_inlay_hints(client, event)
       if not client_supports_method(
-          client,
-          vim.lsp.protocol.Methods.textDocument_inlayHint,
-          event.buf
-        ) then
+            client,
+            vim.lsp.protocol.Methods.textDocument_inlayHint,
+            event.buf
+          ) then
         return
       end
 
@@ -224,39 +224,22 @@ return {
       return servers
     end
 
-    local function create_server_setup_function(servers, capabilities)
-      local setup_done = {}
-
-      return function(lsp_name)
-        if setup_done[lsp_name] then
-          return
-        end
-
-        local lsp_config = servers[lsp_name]
-        if not lsp_config then
-          return
-        end
-
-        local config = vim.tbl_deep_extend('force', {}, lsp_config.config or {})
-        config.capabilities = vim.tbl_deep_extend(
-          'force',
-          {},
-          capabilities,
-          config.capabilities or {}
-        )
-
-        -- Use new vim.lsp.config API for nvim 0.11+
-        vim.lsp.config[lsp_name] = config
-        vim.lsp.enable(lsp_name)
-
-        setup_done[lsp_name] = true
+    local function setup_server(lsp_name, lsp_config, capabilities)
+      if not lsp_config then
+        return
       end
-    end
 
-    local function setup_all_servers(servers, setup_server)
-      for lsp_name, _ in pairs(servers) do
-        setup_server(lsp_name)
-      end
+      local config = vim.tbl_deep_extend('force', {}, lsp_config.config or {})
+      config.capabilities = vim.tbl_deep_extend(
+        'force',
+        {},
+        capabilities,
+        config.capabilities or {}
+      )
+
+      -- Use new vim.lsp.config API for nvim 0.11+
+      vim.lsp.config[lsp_name] = config
+      vim.lsp.enable(lsp_name)
     end
 
     -- ============================================================================
@@ -289,7 +272,8 @@ return {
     servers = merge_server_configs(servers, project_overrides)
 
     -- Setup all servers immediately
-    local setup_server = create_server_setup_function(servers, capabilities)
-    setup_all_servers(servers, setup_server)
+    for lsp_name, lsp_config in pairs(servers) do
+      setup_server(lsp_name, lsp_config, capabilities)
+    end
   end,
 }
