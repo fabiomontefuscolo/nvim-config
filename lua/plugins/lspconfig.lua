@@ -1,10 +1,6 @@
 return {
   'neovim/nvim-lspconfig',
   dependencies = {
-    { 'mason-org/mason.nvim', opts = {} },
-    'mason-org/mason-lspconfig.nvim',
-    'WhoIsSethDaniel/mason-tool-installer.nvim',
-
     { 'j-hui/fidget.nvim', opts = {} },
 
     'saghen/blink.cmp',
@@ -83,12 +79,12 @@ return {
 
         local client = vim.lsp.get_client_by_id(event.data.client_id)
         if
-          client
-          and client_supports_method(
-            client,
-            vim.lsp.protocol.Methods.textDocument_documentHighlight,
-            event.buf
-          )
+            client
+            and client_supports_method(
+              client,
+              vim.lsp.protocol.Methods.textDocument_documentHighlight,
+              event.buf
+            )
         then
           local highlight_augroup = vim.api.nvim_create_augroup(
             'kickstart-lsp-highlight',
@@ -122,12 +118,12 @@ return {
         end
 
         if
-          client
-          and client_supports_method(
-            client,
-            vim.lsp.protocol.Methods.textDocument_inlayHint,
-            event.buf
-          )
+            client
+            and client_supports_method(
+              client,
+              vim.lsp.protocol.Methods.textDocument_inlayHint,
+              event.buf
+            )
         then
           map('<leader>tH', function()
             vim.lsp.inlay_hint.enable(
@@ -170,22 +166,22 @@ return {
     -- LSP server configurations mapped to their filetypes
     local servers = {
       intelephense = {
-        filetypes = { 'php' },
-        config = {},
+        config = {
+          cmd = { 'intelephense', '--stdio' },
+          filetypes = { 'php' },
+        },
       },
 
       ruff = {
-        filetypes = { 'python' },
-        config = {},
+        config = {
+          filetypes = { 'python' },
+        },
       },
 
       pyright = {
-        filetypes = { 'python' },
         config = {
-          root_dir = vim.fs.root(
-            0,
-            { 'pyproject.toml', 'setup.py', '.git', vim.fn.getcwd() }
-          ),
+          filetypes = { 'python' },
+          root_markers = { 'pyproject.toml', 'setup.py' },
           settings = {
             pyright = {
               disableOrganizeImports = true,
@@ -200,8 +196,9 @@ return {
       },
 
       lua_ls = {
-        filetypes = { 'lua' },
         config = {
+          root_markers = { 'init.lua' },
+          filetypes = { 'lua' },
           settings = {
             Lua = {
               completion = {
@@ -214,21 +211,20 @@ return {
     }
 
     -- Track which servers have been set up
-    local setup_servers = {}
+    local setup_done = {}
 
     -- Function to setup a server using the new vim.lsp.config API (nvim 0.11+)
-    local function setup_server(server_name)
-      if setup_servers[server_name] then
+    local function setup_server(lsp_name)
+      if setup_done[lsp_name] then
         return
       end
 
-      local server_config = servers[server_name]
-      if not server_config then
+      local lsp_config = servers[lsp_name]
+      if not lsp_config then
         return
       end
 
-      local config =
-        vim.tbl_deep_extend('force', {}, server_config.config or {})
+      local config = vim.tbl_deep_extend('force', {}, lsp_config.config or {})
       config.capabilities = vim.tbl_deep_extend(
         'force',
         {},
@@ -236,73 +232,39 @@ return {
         config.capabilities or {}
       )
 
-      -- Set filetypes explicitly
-      if server_config.filetypes then
-        config.filetypes = server_config.filetypes
-      end
-
       -- Use new vim.lsp.config API for nvim 0.11+
-      if vim.lsp.config then
-        vim.lsp.config[server_name] = config
-        vim.lsp.enable(server_name)
-      else
-        -- Fallback to old lspconfig for older nvim versions
-        require('lspconfig')[server_name].setup(config)
-      end
+      vim.lsp.config[lsp_name] = config
+      vim.lsp.enable(lsp_name)
 
-      setup_servers[server_name] = true
+      setup_done[lsp_name] = true
     end
-
-    -- Only ensure non-LSP tools are installed
-    require('mason-tool-installer').setup {
-      ensure_installed = {
-        'stylua', -- Lua formatter
-      },
-    }
-
-    -- Enable automatic installation when a filetype is opened
-    require('mason-lspconfig').setup {
-      ensure_installed = {}, -- Don't install anything upfront
-      automatic_installation = true, -- Auto-install when needed
-      handlers = {
-        function(server_name)
-          setup_server(server_name)
-        end,
-      },
-    }
 
     -- Create FileType autocommands for lazy server setup
     local filetype_to_servers = {}
-    for server_name, server_config in pairs(servers) do
-      if server_config.filetypes then
-        for _, ft in ipairs(server_config.filetypes) do
+    for lsp_name, lsp_config in pairs(servers) do
+      local filetypes = lsp_config.config.filetypes
+      if filetypes then
+        for _, ft in ipairs(filetypes) do
           if not filetype_to_servers[ft] then
             filetype_to_servers[ft] = {}
           end
-          table.insert(filetype_to_servers[ft], server_name)
+          table.insert(filetype_to_servers[ft], lsp_name)
         end
       end
     end
+
+    local lsp_lazy_load_group =
+        vim.api.nvim_create_augroup('lsp-lazy-load', { clear = true })
 
     for ft, server_list in pairs(filetype_to_servers) do
       vim.api.nvim_create_autocmd('FileType', {
         pattern = ft,
         callback = function()
-          for _, server_name in ipairs(server_list) do
-            -- Check if server is installed via mason
-            local registry = require 'mason-registry'
-            if registry.is_installed(server_name) then
-              setup_server(server_name)
-            else
-              -- Trigger mason-lspconfig to install it
-              vim.notify(
-                'Installing LSP server: ' .. server_name,
-                vim.log.levels.INFO
-              )
-            end
+          for _, lsp_name in ipairs(server_list) do
+            setup_server(lsp_name)
           end
         end,
-        group = vim.api.nvim_create_augroup('lsp-lazy-load', { clear = true }),
+        group = plsp_lazy_load_group,
       })
     end
   end,
