@@ -163,6 +163,27 @@ return {
 
     local capabilities = require('blink.cmp').get_lsp_capabilities()
 
+    -- Function to load project-specific LSP overrides
+    local function load_project_overrides()
+      local override_file = vim.fn.getcwd() .. '/.nvim/lspconfig.lua'
+      if vim.fn.filereadable(override_file) == 1 then
+        local ok, overrides = pcall(dofile, override_file)
+        if ok and type(overrides) == 'table' then
+          vim.notify(
+            'Loaded LSP overrides from .nvim/lspconfig.lua',
+            vim.log.levels.INFO
+          )
+          return overrides
+        else
+          vim.notify(
+            'Failed to load LSP overrides from ' .. override_file,
+            vim.log.levels.WARN
+          )
+        end
+      end
+      return {}
+    end
+
     -- LSP server configurations mapped to their filetypes
     local servers = {
       intelephense = {
@@ -209,6 +230,22 @@ return {
         },
       },
     }
+
+    -- Load and merge project-specific overrides
+    local project_overrides = load_project_overrides()
+    for lsp_name, override_config in pairs(project_overrides) do
+      if servers[lsp_name] then
+        -- Merge with existing server config
+        servers[lsp_name] = vim.tbl_deep_extend(
+          'force',
+          servers[lsp_name],
+          override_config
+        )
+      else
+        -- Add new server config
+        servers[lsp_name] = override_config
+      end
+    end
 
     -- Track which servers have been set up
     local setup_done = {}
@@ -264,7 +301,7 @@ return {
             setup_server(lsp_name)
           end
         end,
-        group = plsp_lazy_load_group,
+        group = lsp_lazy_load_group,
       })
     end
   end,
