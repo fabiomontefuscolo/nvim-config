@@ -253,35 +253,9 @@ return {
       end
     end
 
-    local function build_filetype_server_map(servers)
-      local filetype_to_servers = {}
-      for lsp_name, lsp_config in pairs(servers) do
-        local filetypes = lsp_config.config.filetypes
-        if filetypes then
-          for _, ft in ipairs(filetypes) do
-            if not filetype_to_servers[ft] then
-              filetype_to_servers[ft] = {}
-            end
-            table.insert(filetype_to_servers[ft], lsp_name)
-          end
-        end
-      end
-      return filetype_to_servers
-    end
-
-    local function setup_lazy_loading(filetype_to_servers, setup_server)
-      local lsp_lazy_load_group = vim.api.nvim_create_augroup('lsp-lazy-load', { clear = true })
-
-      for ft, server_list in pairs(filetype_to_servers) do
-        vim.api.nvim_create_autocmd('FileType', {
-          pattern = ft,
-          callback = function()
-            for _, lsp_name in ipairs(server_list) do
-              setup_server(lsp_name)
-            end
-          end,
-          group = lsp_lazy_load_group,
-        })
+    local function setup_all_servers(servers, setup_server)
+      for lsp_name, _ in pairs(servers) do
+        setup_server(lsp_name)
       end
     end
 
@@ -314,9 +288,8 @@ return {
     local project_overrides = load_project_overrides()
     servers = merge_server_configs(servers, project_overrides)
 
-    -- Setup server loading
+    -- Setup all servers immediately
     local setup_server = create_server_setup_function(servers, capabilities)
-    local filetype_to_servers = build_filetype_server_map(servers)
-    setup_lazy_loading(filetype_to_servers, setup_server)
+    setup_all_servers(servers, setup_server)
   end,
 }
