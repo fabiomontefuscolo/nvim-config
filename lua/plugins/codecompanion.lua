@@ -25,13 +25,14 @@ return {
               'create_file',
               'delete_file',
               'fetch_webpage',
-              'file_search',
               'files',
+              'file_search',
               'full_stack_dev',
               'get_changed_files',
               'grep_search',
               'insert_edit_into_file',
               'list_code_usages',
+              'mcp',
               'memory',
               'next_edit_suggestion',
               'read_file',
@@ -51,7 +52,7 @@ return {
       diff = {
         provider_opts = {
           inline = {
-            layout = 'buffer', -- float|buffer - Where to display the diff
+            layout = 'buffer',   -- float|buffer - Where to display the diff
             opts = {
               context_lines = 3, -- Number of context lines in hunks
             },
