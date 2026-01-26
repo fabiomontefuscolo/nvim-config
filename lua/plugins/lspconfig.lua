@@ -143,7 +143,7 @@ return {
         local ok, overrides = pcall(dofile, override_file)
         if ok and type(overrides) == 'table' then
           vim.notify(
-            'Loaded LSP overrides from .nvim/lspconfig.lua',
+            'Loaded LSP overrides and extensions from .nvim/lspconfig.lua',
             vim.log.levels.INFO
           )
           return overrides
@@ -214,10 +214,16 @@ return {
     -- ============================================================================
 
     local function merge_server_configs(servers, project_overrides)
+      -- Merge project-specific LSP configurations
+      -- This supports both:
+      -- 1. Overriding existing server configs (deep merge)
+      -- 2. Extending with new server configs (add new lsp servers)
       for lsp_name, override_config in pairs(project_overrides) do
         if servers[lsp_name] then
+          -- Override: Deep merge with existing server config
           servers[lsp_name] = vim.tbl_deep_extend('force', servers[lsp_name], override_config)
         else
+          -- Extend: Add new server config
           servers[lsp_name] = override_config
         end
       end
