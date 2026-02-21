@@ -22,8 +22,14 @@ return {
   config = true,
   event = 'VeryLazy',
   opts = {
-    size = 10,
-    open_mapping = [[<c-`>]],
+    size = function(term)
+      if term.direction == 'vertical' then
+        return vim.o.columns * 0.4
+      else
+        return 20
+      end
+    end,
+    open_mapping = [[<c-\>]],
   },
   keys = {
     {
@@ -38,7 +44,7 @@ return {
     },
     {
       '<M-v>',
-      '<cmd>ToggleTerm direction=vertical size=60<cr>',
+      '<cmd>ToggleTerm direction=vertical<cr>',
       desc = 'Toggle vertical terminal',
     },
   },
