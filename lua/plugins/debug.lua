@@ -123,5 +123,46 @@ return {
         detached = vim.fn.has 'win32' == 0,
       },
     }
+
+    -- PHP/Xdebug configuration
+    dap.adapters.php = {
+      type = 'executable',
+      command = 'node',
+      args = { vim.fn.expand('$HOME') .. '/devel/vscode-php-debug/out/phpDebug.js' },
+    }
+
+    dap.configurations.php = {
+      {
+        name = 'Listen for Xdebug',
+        type = 'php',
+        request = 'launch',
+        port = 9003, -- Default Xdebug 3 port (use 9000 for Xdebug 2)
+        log = false,
+      },
+      {
+        name = 'Listen for Xdebug (Docker)',
+        type = 'php',
+        request = 'launch',
+        port = 9003,
+        log = false,
+        -- Common Docker path mappings
+        pathMappings = {
+          ['/var/www/html'] = '${workspaceFolder}',
+          ['/app'] = '${workspaceFolder}',
+        },
+      },
+      {
+        name = 'Listen for Xdebug (custom port)',
+        type = 'php',
+        request = 'launch',
+        port = function()
+          return vim.fn.input('Port: ', '9003')
+        end,
+        log = false,
+        pathMappings = {
+          ['/var/www/html'] = '${workspaceFolder}',
+        },
+      },
+    }
   end,
 }
